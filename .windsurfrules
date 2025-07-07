@@ -1,0 +1,61 @@
+# SSO Admin Panel .windsurfrules
+version: 1.0
+
+# Project Configuration
+project:
+  name: sso-admin-panel
+  description: Admin panel for SSO with Super Admin and Admin user roles
+  
+# Database Configuration
+database:
+  type: postgres
+  orm: prisma
+
+# User Roles
+roles:
+  - name: SuperAdmin
+    description: Has full access to all features and can manage Admins
+    permissions:
+      - manage_admins
+      - manage_users
+      - view_all_logs
+      - configure_system
+      - manage_integrations
+  
+  - name: Admin
+    description: Has limited administrative access
+    permissions:
+      - manage_users
+      - view_limited_logs
+      - basic_configuration
+
+# File Structure Rules
+structure:
+  - path: src/
+    description: Main source code
+  - path: src/api/
+    description: API endpoints
+  - path: src/models/
+    description: Prisma models and database schema
+  - path: src/auth/
+    description: Authentication and authorization logic
+  - path: src/components/
+    description: UI components
+  - path: prisma/
+    description: Prisma schema and migrations
+
+# Coding Standards
+standards:
+  - rule: Use TypeScript for type safety
+  - rule: Follow RESTful API design principles
+  - rule: Implement proper authentication middleware
+  - rule: Use environment variables for sensitive information
+  - rule: Write unit tests for critical functionality
+
+# Security Rules
+security:
+  - rule: Implement role-based access control (RBAC)
+  - rule: Use JWT for authentication
+  - rule: Hash passwords using bcrypt
+  - rule: Implement rate limiting for API endpoints
+  - rule: Use HTTPS for all communications
