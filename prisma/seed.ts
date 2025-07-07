@@ -69,6 +69,27 @@ async function main() {
   });
 
   // Create roles
+  // User role with limited permissions
+  const userRole = await prisma.role.upsert({
+    where: { name: 'user' },
+    update: {
+      permissions: {
+        connect: [
+          { id: viewLimitedLogs.id },
+        ],
+      },
+    },
+    create: {
+      name: 'user',
+      description: 'Regular user with limited permissions',
+      permissions: {
+        connect: [
+          { id: viewLimitedLogs.id },
+        ],
+      },
+    },
+  });
+
   const superAdminRole = await prisma.role.upsert({
     where: { name: 'SuperAdmin' },
     update: {
@@ -124,6 +145,7 @@ async function main() {
   // Create users
   const hashedSuperAdminPassword = await bcrypt.hash('superadmin123', 10);
   const hashedAdminPassword = await bcrypt.hash('admin123', 10);
+  const hashedUserPassword = await bcrypt.hash('user123', 10);
 
   const superAdmin = await prisma.user.upsert({
     where: { email: 'superadmin@example.com' },
@@ -147,7 +169,47 @@ async function main() {
     },
   });
 
-  console.log({ superAdmin, admin });
+  // Create regular users that can be assigned to clients
+  const user1 = await prisma.user.upsert({
+    where: { email: 'editor@example.com' },
+    update: {
+      roleId: userRole.id, // Update to user role
+    },
+    create: {
+      email: 'editor@example.com',
+      name: 'Editor User',
+      password: hashedUserPassword,
+      roleId: userRole.id, // Using user role
+    },
+  });
+
+  const user2 = await prisma.user.upsert({
+    where: { email: 'viewer@example.com' },
+    update: {
+      roleId: userRole.id, // Update to user role
+    },
+    create: {
+      email: 'viewer@example.com',
+      name: 'Viewer User',
+      password: hashedUserPassword,
+      roleId: userRole.id, // Using user role
+    },
+  });
+
+  const user3 = await prisma.user.upsert({
+    where: { email: 'developer@example.com' },
+    update: {
+      roleId: userRole.id, // Update to user role
+    },
+    create: {
+      email: 'developer@example.com',
+      name: 'Developer User',
+      password: hashedUserPassword,
+      roleId: userRole.id, // Using user role
+    },
+  });
+
+  console.log({ superAdmin, admin, regularUsers: [user1, user2, user3], roles: { superAdmin: superAdminRole.name, admin: adminRole.name, user: userRole.name } });
 }
 
 main()
