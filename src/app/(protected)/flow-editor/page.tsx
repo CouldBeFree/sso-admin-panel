@@ -1,6 +1,7 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 
 export default function FlowEditorPage() {
   const { data: session } = useSession();
@@ -23,10 +24,13 @@ export default function FlowEditorPage() {
           <div className="rounded border border-gray-200 p-4">
             <h3 className="mb-2 text-lg font-medium text-black">Available Flows</h3>
             <ul className="list-inside list-disc text-black">
-              <li>Standard Login</li>
-              <li>Multi-Factor Authentication</li>
-              <li>Social Login</li>
-              <li>Password Reset</li>
+              <li>Login</li>
+              <li>Forgot password</li>
+              <li>
+                <Link href="/flow-editor/registration" className="text-blue-600 hover:text-blue-800 hover:underline">
+                  Registration
+                </Link>
+              </li>
             </ul>
             <button className="mt-4 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 cursor-pointer">
               Create New Flow
@@ -38,9 +42,9 @@ export default function FlowEditorPage() {
             <p className="text-black">
               Drag and drop components to build custom authentication flows with various steps and validations.
             </p>
-            <button className="mt-4 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 cursor-pointer">
+            <Link href="/flow-editor/registration" className="mt-4 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 cursor-pointer inline-block">
               Open Flow Designer
-            </button>
+            </Link>
           </div>
         </div>
         

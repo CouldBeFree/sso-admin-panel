@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
 
 interface Client {
   id: string;
@@ -23,6 +24,8 @@ export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [visibleSecrets, setVisibleSecrets] = useState<Record<string, boolean>>({});
+  const [visibleClientIds, setVisibleClientIds] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     async function fetchClients() {
@@ -45,6 +48,30 @@ export default function ClientsPage() {
 
     fetchClients();
   }, []);
+
+  const copyToClipboard = async (text: string, type: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success(`${type} copied to clipboard`);
+    } catch (err) {
+      toast.error('Failed to copy to clipboard');
+      console.error('Failed to copy:', err);
+    }
+  };
+
+  const toggleVisibility = (id: string, type: 'secret' | 'clientId') => {
+    if (type === 'secret') {
+      setVisibleSecrets(prev => ({
+        ...prev,
+        [id]: !prev[id]
+      }));
+    } else {
+      setVisibleClientIds(prev => ({
+        ...prev,
+        [id]: !prev[id]
+      }));
+    }
+  };
 
   const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to delete this client?')) {
@@ -100,9 +127,7 @@ export default function ClientsPage() {
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-black">
                   Client Secret
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-black">
-                  Description
-                </th>
+
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-black">
                   Scopes
                 </th>
@@ -127,15 +152,57 @@ export default function ClientsPage() {
                     <td className="whitespace-nowrap px-6 py-4 text-black">
                       {client.name}
                     </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-black">
-                      {client.client_id}
+                    <td className="whitespace-nowrap px-6 py-4 text-black flex items-center">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-mono">
+                          {visibleClientIds[client.id] ? client.client_id : '••••••••••••••••'}
+                        </span>
+                        <button 
+                          onClick={() => toggleVisibility(client.id, 'clientId')}
+                          className="text-gray-500 hover:text-gray-700 cursor-pointer"
+                          title={visibleClientIds[client.id] ? "Hide Client ID" : "Show Client ID"}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={visibleClientIds[client.id] ? "M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" : "M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"} />
+                          </svg>
+                        </button>
+                        <button 
+                          onClick={() => copyToClipboard(client.client_id, 'Client ID')}
+                          className="text-blue-500 hover:text-blue-700 cursor-pointer"
+                          title="Copy Client ID"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                          </svg>
+                        </button>
+                      </div>
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-black">
-                      {client.client_secret}
+                      <div className="flex items-center space-x-2">
+                        <span className="font-mono">
+                          {visibleSecrets[client.id] ? client.client_secret : '••••••••••••••••'}
+                        </span>
+                        <button 
+                          onClick={() => toggleVisibility(client.id, 'secret')}
+                          className="text-gray-500 hover:text-gray-700 cursor-pointer"
+                          title={visibleSecrets[client.id] ? "Hide Client Secret" : "Show Client Secret"}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={visibleSecrets[client.id] ? "M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" : "M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"} />
+                          </svg>
+                        </button>
+                        <button 
+                          onClick={() => copyToClipboard(client.client_secret, 'Client Secret')}
+                          className="text-blue-500 hover:text-blue-700 cursor-pointer"
+                          title="Copy Client Secret"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                          </svg>
+                        </button>
+                      </div>
                     </td>
-                    <td className="px-6 py-4 text-black">
-                      {client.description || 'No description'}
-                    </td>
+
                     <td className="px-6 py-4 text-black">
                       {client.scopes.map((scope) => (
                         <span

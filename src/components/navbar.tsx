@@ -44,6 +44,12 @@ export default function Navbar() {
             >
               Flow Editor
             </Link>
+            <Link
+              href="/admin-edit"
+              className={`rounded px-3 py-2 text-white hover:bg-blue-700 ${isActive('/admin-edit')}`}
+            >
+              Admin Edit
+            </Link>
           </div>
         </div>
         <div className="flex items-center space-x-4">

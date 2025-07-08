@@ -248,62 +248,62 @@ export default function StateEditorPage() {
                   </div>
                 </div>
               </form>
-              
-              <h2 className="mb-4 text-xl font-semibold text-black">Current Users</h2>
-              
-              {filteredClientUsers.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-black">
-                          User
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-black">
-                          Email
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-black">
-                          Role
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-black">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200 bg-white">
-                      {filteredClientUsers.map((clientUser) => (
-                        <tr key={clientUser.id}>
-                          <td className="whitespace-nowrap px-6 py-4 text-black">
-                            {clientUser.user.name}
-                          </td>
-                          <td className="whitespace-nowrap px-6 py-4 text-black">
-                            {clientUser.user.email}
-                          </td>
-                          <td className="whitespace-nowrap px-6 py-4 text-black">
-                            <span className="rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800">
-                              {clientUser.role}
-                            </span>
-                          </td>
-                          <td className="whitespace-nowrap px-6 py-4 text-sm">
-                            <button
-                              onClick={() => handleRemoveClientUser(clientUser.id)}
-                              className="text-red-600 hover:text-red-900 cursor-pointer"
-                              title="Remove user from client"
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                              </svg>
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <p className="text-black">No users assigned to this client yet.</p>
-              )}
             </>
+          )}
+          
+          <h2 className="mb-4 text-xl font-semibold text-black">Current Users</h2>
+          
+          {filteredClientUsers.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-black">
+                      User
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-black">
+                      Email
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-black">
+                      Role
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-black">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 bg-white">
+                  {filteredClientUsers.map((clientUser) => (
+                    <tr key={clientUser.id}>
+                      <td className="whitespace-nowrap px-6 py-4 text-black">
+                        {clientUser.user.name}
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-black">
+                        {clientUser.user.email}
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-black">
+                        <span className="rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800">
+                          {clientUser.role}
+                        </span>
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-sm">
+                        <button
+                          onClick={() => handleRemoveClientUser(clientUser.id)}
+                          className="text-red-600 hover:text-red-900 cursor-pointer"
+                          title="Remove user from client"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                          </svg>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-black">No users assigned to this client yet.</p>
           )}
         </div>
       )}
